@@ -1,7 +1,17 @@
 {
   "name": "square-sum",
   "packageManager": "yarn@3.2.3",
+  "scripts": {
+    "test": "vitest"
+  },
   "engines": {
     "node": "16.1.0"
+  },
+  "dependencies": {
+    "typescript": "^4.8.3"
+  },
+  "devDependencies": {
+    "vite": "^3.1.2",
+    "vitest": "^0.23.4"
   }
 }

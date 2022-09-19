@@ -11,3 +11,6 @@
 
 # nodejs version control
 .tool-versions
+
+# vite
+node_modules
