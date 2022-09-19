@@ -1,0 +1,7 @@
+{
+  "name": "square-sum",
+  "packageManager": "yarn@3.2.3",
+  "engines": {
+    "node": "16.1.0"
+  }
+}

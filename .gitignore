@@ -1,0 +1,13 @@
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Turn off zero-installs
+# !.yarn/cache
+.pnp.*
+
+# nodejs version control
+.tool-versions
