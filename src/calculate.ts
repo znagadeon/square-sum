@@ -29,11 +29,14 @@ export const countSqSumElement = (N: number, nums: number[], memo: Map<number, n
     return memo.get(N) as number;
   }
 
-  const result = nums.map((v, i) => {
-    if (v > N) return -1;
-    return countSqSumElement(N - v, nums, memo);
-  }).filter(v => v > -1);
-  if (result.length === 0) return -1;
+  const result = nums
+    .map(v => countSqSumElement(N - v, nums, memo))
+    .filter(v => v > -1);
+
+  if (result.length === 0) {
+    memo.set(N, -1);
+    return -1;
+  }
 
   memo.set(N, Math.min(...result) + 1);
   return memo.get(N) as number;
@@ -49,10 +52,9 @@ export const calculate = ({ N, a, b, allowNegative }: Parameter) => {
 
   let percentage = 0;
   for (let i=1; i<=N; i++) {
-    // const result = countSqSumElement(i, nums.filter(v => v <= i), memo);
+    const result = countSqSumElement(i, nums, memo);
     // console.log(i, result);
 
-    countSqSumElement(i, nums.filter(v => v<=i), memo);
     if (Math.floor(i * 100 / N) > percentage) {
       percentage = Math.floor(i * 100 / N);
       console.log(`${percentage}% calculated...`);

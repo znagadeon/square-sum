@@ -49,8 +49,8 @@ describe('calucate', () => {
       .toBe(100_001);
   });
 
-  it('stores nothing if the element has no solution', () => {
-    expect(calculate({ N: 25, a: 3, b: 2, allowNegative: false }).get(1)).toBe(undefined);
+  it('stores -1 if the element has no solution', () => {
+    expect(calculate({ N: 25, a: 3, b: 2, allowNegative: false }).get(1)).toBe(-1);
   });
 
   it('a and b cannot be both zero', () => {
