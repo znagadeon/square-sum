@@ -18,38 +18,48 @@ export const getNumList = ({ N, a, b, allowNegative }: Parameter) => {
     set.add((a * i + b) ** 2);
   }
 
-  return Array.from(set).sort((a, b) => a-b);
+  return Array.from(set).filter(v => v !== 0).sort((a, b) => a-b);
 };
 
-export const countSqSumElement = (() => {
-  const memo = new Map<number, number>();
-  memo.set(0, 0);
+export const countSqSumElement = (N: number, nums: number[], memo: Map<number, number>) => {
+  if (N < 0) return -1;
+  if (nums.length === 0) return -1;
 
-  const run = (N: number, nums: number[], root: boolean = true) => {
-    if (root) {
-      memo.clear();
-      memo.set(0, 0);
-    }
-
-    if (N < 0) throw new Error('Negative Number');
-    if (nums.length === 0) throw new Error('No Nums');
-
-    if (memo.has(N)) {
-      return memo.get(N) as number;
-    }
-
-    const result = nums.map(v => {
-      try {
-        return run(N - v**2, nums, false);
-      } catch (e) {
-        return -1;
-      }
-    }).filter(v => v !== -1);
-    if (result.length === 0) throw new Error('Impossible');
-
-    memo.set(N, Math.min(...result) + 1);
+  if (memo.has(N)) {
     return memo.get(N) as number;
-  };
+  }
 
-  return run;
-})();
+  const result = nums.map((v, i) => {
+    if (v > N) return -1;
+    return countSqSumElement(N - v, nums, memo);
+  }).filter(v => v > -1);
+  if (result.length === 0) return -1;
+
+  memo.set(N, Math.min(...result) + 1);
+  return memo.get(N) as number;
+};
+
+export const calculate = ({ N, a, b, allowNegative }: Parameter) => {
+  if (a === 0 && b === 0) throw new Error('Zero Parameter');
+
+  const nums = getNumList({ N, a, b, allowNegative });
+  const memo = new Map<number, number>([
+    [0, 0],
+  ]);
+
+  let percentage = 0;
+  for (let i=1; i<=N; i++) {
+    // const result = countSqSumElement(i, nums.filter(v => v <= i), memo);
+    // console.log(i, result);
+
+    countSqSumElement(i, nums.filter(v => v<=i), memo);
+    if (Math.floor(i * 100 / N) > percentage) {
+      percentage = Math.floor(i * 100 / N);
+      console.log(`${percentage}% calculated...`);
+    }
+  }
+
+  return memo;
+}
+
+// calculate({ N: 1_000_000, a: 3, b: 1, allowNegative: false });

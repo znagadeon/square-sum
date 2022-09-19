@@ -1,27 +1,59 @@
-import { describe, it, expect } from 'vitest';
-import { countSqSumElement, getNumList } from './calculate';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { calculate, countSqSumElement, getNumList } from './calculate';
 
 describe('getNumList', () => {
   it('returns square sum list', () => {
     expect(getNumList({ N: 400, a: 3, b: 1, allowNegative: false }))
       .toEqual([1, 16, 49, 100, 169, 256, 361]);
 
-    expect(getNumList({ N: 400, a: 3, b: 1, allowNegative: true }))
-      .toEqual([1, 4, 16, 25, 49, 64, 100, 121, 169, 196, 256, 289, 361, 400]);
+    expect(getNumList({ N: 20, a: 3, b: 1, allowNegative: true }))
+      .toEqual([1, 4, 16]);
+
+    expect(getNumList({ N: 1, a: 1, b: -1, allowNegative: true }))
+      .toEqual([1]);
   });
 });
 
 describe('countSqSumElement', () => {
+  const memo = new Map<number, number>();
+
+  beforeEach(() => {
+    memo.clear();
+    memo.set(0, 0);
+  })
+
   it('returns square sum element count', () => {
-    expect(countSqSumElement(1, [1])).toBe(1);
-    expect(countSqSumElement(25, [1, 2, 3])).toBe(5);
+    expect(countSqSumElement(1, [1], memo)).toBe(1);
+    expect(countSqSumElement(25, [1, 4, 9], memo)).toBe(5);
   });
 
-  it('nums cannot be empty array', async () => {
-    expect(() => countSqSumElement(1, [])).toThrow('No Nums');
+  it('returns -1 if there is no solution', () => {
+    expect(countSqSumElement(5, [4], memo)).toBe(-1);
   });
 
-  it('If there is no solution, throw Impossible error', () => {
-    expect(() => countSqSumElement(5, [2])).toThrowError('Impossible');
+  it('nums cannot be empty array', () => {
+    expect(countSqSumElement(1, [], memo)).toBe(-1);
+  });
+
+  it('N cannot be negative', () => {
+    expect(countSqSumElement(-1, [1], memo)).toBe(-1);
+  });
+});
+
+describe('calucate', () => {
+  it('returns square sum element count based on auto-generated array', () => {
+    expect(calculate({ N: 400, a: 3, b: 1, allowNegative: false }).get(400))
+      .toBe(4);
+
+    expect(calculate({ N: 100_000, a: 3, b: 1, allowNegative: false }).size)
+      .toBe(100_001);
+  });
+
+  it('stores nothing if the element has no solution', () => {
+    expect(calculate({ N: 25, a: 3, b: 2, allowNegative: false }).get(1)).toBe(undefined);
+  });
+
+  it('a and b cannot be both zero', () => {
+    expect(() => calculate({ N: 1, a: 0, b: 0, allowNegative: false })).toThrowError('Zero Parameter');
   });
 });
