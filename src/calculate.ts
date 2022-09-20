@@ -42,7 +42,7 @@ export const countSqSumElement = (N: number, nums: number[], memo: Map<number, n
   return memo.get(N) as number;
 };
 
-export const calculate = ({ N, a, b, allowNegative }: Parameter) => {
+export const calculate = ({ N, a, b, allowNegative }: Parameter, cb?: (p: number) => void) => {
   if (a === 0 && b === 0) throw new Error('Zero Parameter');
 
   const nums = getNumList({ N, a, b, allowNegative });
@@ -52,16 +52,23 @@ export const calculate = ({ N, a, b, allowNegative }: Parameter) => {
 
   let percentage = 0;
   for (let i=1; i<=N; i++) {
-    const result = countSqSumElement(i, nums, memo);
-    // console.log(i, result);
+    requestIdleCallback(() => {
+      countSqSumElement(i, nums, memo);
 
-    if (Math.floor(i * 100 / N) > percentage) {
-      percentage = Math.floor(i * 100 / N);
-      console.log(`${percentage}% calculated...`);
-    }
+      if (Math.floor(i * 100 / N) > percentage) {
+        percentage = Math.floor(i * 100 / N);
+        cb && cb(percentage);
+      }
+    });
+
+    // 테스트용
+    // countSqSumElement(i, nums, memo);
+
+    // if (Math.floor(i * 100 / N) > percentage) {
+    //   percentage = Math.floor(i * 100 / N);
+    //   cb && cb(percentage);
+    // }
   }
 
   return memo;
 }
-
-// calculate({ N: 1_000_000, a: 3, b: 1, allowNegative: false });

@@ -1,20 +1,34 @@
 import { useRef, useState } from 'react';
+import { calculate } from './calculate';
 
 const App = () => {
-  const [n, setN] = useState(10_000_000);
+  const [N, setN] = useState(1_000_000);
   const [a, setA] = useState(3);
   const [b, setB] = useState(1);
+  const [allowNegative, setAllowNegative] = useState(false);
+  const [percentage, setPercentage] = useState(0);
+  const map = useRef<Map<number, number> | null>(null);
 
-  const map = useRef(new Map<number, number>()).current;
+  const start = () => {
+    if (a === 0 && b === 0) {
+      alert('a와 b가 모두 0일 수 없음');
+      return;
+    }
 
-  map.set(0, 0); // test
+    map.current = calculate({ N, a, b, allowNegative }, setPercentage);
+  };
 
   const download = () => {
+    if (map.current === null) return;
+
     const link = document.createElement('a');
-    const result = Array.from(map.entries()).map(([N, min]) => `${N}\t${min}`);
-    const blob = new Blob(['N\tmin\n' + result.join('\n')]);
+
+    map.current.delete(0);
+    const result = Array.from(map.current.entries()).map(([n, min]) => `${n},${min}`);
+    const blob = new Blob(['N,min\n' + result.join('\n')]);
+
     link.href = URL.createObjectURL(blob);
-    link.download = `${n}-${a}-${b}.tsv`;
+    link.download = `${N}-${a}-${b}-${allowNegative ? 'negative' : 'positive'}.csv`;
     link.click();
   };
 
@@ -28,47 +42,73 @@ const App = () => {
           <ul>
             <li>
               <label>
-                N <input type="number" min={0} max={1_000_000} />
+                N
+                <input
+                  type="number"
+                  min={0}
+                  value={N}
+                  onChange={(e) => setN(parseInt(e.target.value))}
+                />
               </label>
             </li>
             <li>
               <label>
-                a <input type="number" />
+                a
+                <input
+                  type="number"
+                  min={0}
+                  value={a}
+                  onChange={(e) => setA(parseInt(e.target.value))}
+                />
               </label>
             </li>
             <li>
               <label>
-                b <input type="number" />
+                b
+                <input
+                  type="number"
+                  min={0}
+                  value={b}
+                  onChange={(e) => setB(parseInt(e.target.value))}
+                />
               </label>
             </li>
             <li>
               <label>
-                음수 허용 <input type="checkbox" />
+                음수 허용
+                <input
+                  type="checkbox"
+                  checked={allowNegative}
+                  onChange={(e) => setAllowNegative(e.target.checked)}
+                />
               </label>
             </li>
             <li>
-              <button disabled={true}>계산하기</button>
+              <button
+                onClick={start}
+                disabled={percentage !== 0 && percentage !== 100}
+              >
+                계산하기
+              </button>
             </li>
           </ul>
         </nav>
         <section>
-          <h2>계산중...</h2>
-          <progress max={100} value={10}>10%</progress>
+          {percentage === 0 ? (
+            <h2>계산을 시작하세요</h2>
+          ) : (
+            <>
+              <h2>{percentage === 100 ? '계산 완료' : '계산중...'}</h2>
+              <progress max={100} value={percentage}>{percentage}%</progress>
+            </>
+          )}
         </section>
-        <section>
-          <h2>다운로드</h2>
-          <button disabled={false} onClick={download}>다운로드</button>
-        </section>
-        <section>
-          <h2>조회하기</h2>
-          <label>
-            N <input type="number" />
-          </label>
-          <button disabled={true}>조회하기</button>
-          <p>
-            66의 min은 3, square-sum에 사용된 숫자는 1, 4, 7입니다.
-          </p>
-        </section>
+        {percentage === 100 && (
+          <section>
+            <h2>다운로드</h2>
+            <button disabled={map.current === null} onClick={download}>다운로드</button>
+          </section>
+        )}
       </main>
     </div>
   );
