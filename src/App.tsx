@@ -1,4 +1,23 @@
+import { useRef, useState } from 'react';
+
 const App = () => {
+  const [n, setN] = useState(10_000_000);
+  const [a, setA] = useState(3);
+  const [b, setB] = useState(1);
+
+  const map = useRef(new Map<number, number>()).current;
+
+  map.set(0, 0); // test
+
+  const download = () => {
+    const link = document.createElement('a');
+    const result = Array.from(map.entries()).map(([N, min]) => `${N}\t${min}`);
+    const blob = new Blob(['N\tmin\n' + result.join('\n')]);
+    link.href = URL.createObjectURL(blob);
+    link.download = `${n}-${a}-${b}.tsv`;
+    link.click();
+  };
+
   return (
     <div>
       <header>
@@ -38,7 +57,7 @@ const App = () => {
         </section>
         <section>
           <h2>다운로드</h2>
-          <button disabled={true}>다운로드</button>
+          <button disabled={false} onClick={download}>다운로드</button>
         </section>
         <section>
           <h2>조회하기</h2>
