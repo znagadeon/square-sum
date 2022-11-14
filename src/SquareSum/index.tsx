@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { calculate } from './calculate';
 
+import { NumberInput } from '../components/Input';
+
 const SquareSumPage = () => {
   const [N, setN] = useState(1_000_000);
   const [a, setA] = useState(3);
@@ -41,37 +43,13 @@ const SquareSumPage = () => {
         <nav>
           <ul>
             <li>
-              <label>
-                N
-                <input
-                  type="number"
-                  min={0}
-                  value={N}
-                  onChange={(e) => setN(parseInt(e.target.value))}
-                />
-              </label>
+              <NumberInput min={0} value={N} onChange={setN}>N</NumberInput>
             </li>
             <li>
-              <label>
-                a
-                <input
-                  type="number"
-                  min={0}
-                  value={a}
-                  onChange={(e) => setA(parseInt(e.target.value))}
-                />
-              </label>
+              <NumberInput min={0} value={a} onChange={setA}>a</NumberInput>
             </li>
             <li>
-              <label>
-                b
-                <input
-                  type="number"
-                  min={0}
-                  value={b}
-                  onChange={(e) => setB(parseInt(e.target.value))}
-                />
-              </label>
+              <NumberInput min={0} value={b} onChange={setB}>b</NumberInput>
             </li>
             <li>
               <label>
