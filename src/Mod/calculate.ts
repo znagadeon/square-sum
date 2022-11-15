@@ -1,8 +1,20 @@
 export type CalculateReturnType = [number, number, number];
 
 export const calculate = (N: number, divider: number, mod: number[]): CalculateReturnType => {
-  // N - a**2 - b**2 - c**2 === mod (mod divider)인 a, b, c 반환
-  // a, b, c는 0보다 크거나 같은 정수, a, b, c의 mod 8은 7이 아님
+  for(let i=0; i**2 <= N; i++) {
+    if (i % 3 === 0) continue;
 
-  return [1, 2, 3];
+    for (let j=0; i**2 + j**2 <= N && j<=i; j++) {
+      if (i % 3 === 0) continue;
+
+      for (let k=0; i**2 + j**2 + k**2 <= N && k<=j; k++) {
+        if (i % 3 === 0) continue;
+
+        const subtracted = N - i**2 - j**2 - k**2;
+        if (mod.includes(subtracted % divider)) return [i, j, k];
+      }
+    }
+  }
+
+  return [-1, -1, -1];
 };

@@ -1,19 +1,39 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { NumberInput, ArrayInput } from '../components/Input';
 import { calculate, CalculateReturnType } from './calculate';
+import { download } from '../utils/download';
 
 const ModPage = () => {
-  const [N, setN] = useState(1_000);
+  const [N, setN] = useState(1_000_000);
   const [mod, setMod] = useState(9);
   const [targets, setTargets] = useState<string[]>(['3', '6']);
   const numberTargets = targets.map(v => parseInt(v));
 
-  const [started, setStarted] = useState(false);
-  const [result, setResult] = useState<CalculateReturnType | null>(null);
+  const [percentage, setPercentage] = useState(0);
+
+  const map = useRef(new Map<number, CalculateReturnType>())
 
   const start = () => {
-    setStarted(true);
-    setResult(calculate(N, mod, numberTargets));
+    for (let i=1; i<=N; i++) {
+      requestIdleCallback(() => {
+        map.current.set(i, calculate(i, mod, numberTargets));
+
+        const _percentage = Math.floor(i * 100 / N);
+        if (_percentage > percentage) {
+          setPercentage(_percentage);
+        }
+      });
+    }
+  };
+
+  const _download = () => {
+    const result = Array.from(map.current.entries())
+      .map(([N, [a, b, c]]) => `${N},${a},${b},${c}`);
+
+    download({
+      data: 'N,a,b,c\n' + result.join('\n'),
+      filename: `${N}-mod${mod}.csv`,
+    });
   };
 
   return (
@@ -39,16 +59,19 @@ const ModPage = () => {
           </ul>
         </nav>
         <section>
-          {!started && (
+          {percentage === 0 && (
             <h2>계산을 시작하세요</h2>
           )}
-          {started && !result && (
-            <h2>계산중...</h2>
+          {(0 < percentage && percentage < 100) && (
+            <>
+              <h2>계산중... {percentage}%</h2>
+              <progress max={100} value={percentage}>{percentage}%</progress>
+            </>
           )}
-          {started && result && (
+          {percentage === 100 && (
             <>
               <h2>계산 완료</h2>
-              <p>{JSON.stringify(result, null, 2)}</p>
+              <button onClick={_download}>다운로드</button>
             </>
           )}
         </section>
