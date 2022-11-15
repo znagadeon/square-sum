@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { calculate } from './calculate';
+import { download } from '../utils/download';
 
 import { NumberInput } from '../components/Input';
 
@@ -20,18 +21,16 @@ const SquareSumPage = () => {
     map.current = calculate({ N, a, b, allowNegative }, setPercentage);
   };
 
-  const download = () => {
+  const _download = () => {
     if (map.current === null) return;
-
-    const link = document.createElement('a');
 
     map.current.delete(0);
     const result = Array.from(map.current.entries()).map(([n, min]) => `${n},${min}`);
-    const blob = new Blob(['N,min\n' + result.join('\n')]);
 
-    link.href = URL.createObjectURL(blob);
-    link.download = `${N}-${a}-${b}-${allowNegative ? 'negative' : 'positive'}.csv`;
-    link.click();
+    download({
+      data: 'N,min\n' + result.join('\n'),
+      filename: `${N}-${a}-${b}-${allowNegative ? 'negative' : 'positive'}.csv`
+    });
   };
 
   return (
@@ -84,7 +83,7 @@ const SquareSumPage = () => {
         {percentage === 100 && (
           <section>
             <h2>다운로드</h2>
-            <button disabled={map.current === null} onClick={download}>다운로드</button>
+            <button disabled={map.current === null} onClick={_download}>다운로드</button>
           </section>
         )}
       </main>
