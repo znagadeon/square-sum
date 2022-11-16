@@ -11,7 +11,11 @@ export const calculate = (N: number, divider: number, mod: number[]): CalculateR
         if (i % 3 === 0) continue;
 
         const subtracted = N - i**2 - j**2 - k**2;
-        if (mod.includes(subtracted % divider)) return [i, j, k];
+
+        if (!mod.includes(subtracted % divider)) continue;
+        if (subtracted % 8 === 7) continue;
+
+        return [i, j, k];
       }
     }
   }
