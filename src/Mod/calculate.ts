@@ -13,7 +13,13 @@ export const calculate = (N: number, divider: number, mod: number[]): CalculateR
         const subtracted = N - i**2 - j**2 - k**2;
 
         if (!mod.includes(subtracted % divider)) continue;
-        if (subtracted % 8 === 7) continue;
+
+        let dividedBy4 = subtracted;
+        while (dividedBy4 % 4 === 0) {
+          dividedBy4 >>= 2;
+        }
+
+        if (dividedBy4 % 8 === 7) continue;
 
         return [i, j, k];
       }
