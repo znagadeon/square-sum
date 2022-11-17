@@ -5,10 +5,10 @@ export const calculate = (N: number, divider: number, mod: number[]): CalculateR
     if (i % 3 === 0) continue;
 
     for (let j=0; i**2 + j**2 <= N && j<=i; j++) {
-      if (i % 3 === 0) continue;
+      if (j % 3 === 0) continue;
 
       for (let k=0; i**2 + j**2 + k**2 <= N && k<=j; k++) {
-        if (i % 3 === 0) continue;
+        if (k % 3 === 0) continue;
 
         const subtracted = N - i**2 - j**2 - k**2;
 
