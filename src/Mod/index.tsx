@@ -16,7 +16,11 @@ const ModPage = () => {
   const start = () => {
     for (let i=1; i<=N; i++) {
       requestIdleCallback(() => {
-        map.current.set(i, calculate(i, mod, numberTargets));
+        const result = calculate(i, mod, numberTargets);
+        if (import.meta.env.MODE === 'development') {
+          console.log(i, result);
+        }
+        map.current.set(i, result);
 
         const _percentage = Math.floor(i * 100 / N);
         if (_percentage > percentage) {

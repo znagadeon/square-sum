@@ -1,14 +1,18 @@
 export type CalculateReturnType = [number, number, number];
 
+const shouldPass = (n: number) => {
+  return n !== 0 && n % 3 === 0;
+}
+
 export const calculate = (N: number, divider: number, mod: number[]): CalculateReturnType => {
   for(let i=0; i**2 <= N; i++) {
-    if (i % 3 === 0) continue;
+    if (shouldPass(i)) continue;
 
     for (let j=0; i**2 + j**2 <= N && j<=i; j++) {
-      if (j % 3 === 0) continue;
+      if (shouldPass(j)) continue;
 
       for (let k=0; i**2 + j**2 + k**2 <= N && k<=j; k++) {
-        if (k % 3 === 0) continue;
+        if (shouldPass(k)) continue;
 
         const subtracted = N - i**2 - j**2 - k**2;
 
