@@ -12,6 +12,11 @@ describe('getNumList', () => {
     expect(getNumList({ N: 1, a: 1, b: -1, allowNegative: true }))
       .toEqual([1]);
   });
+
+  it('excludes numbers if exclude has more than one elements', () => {
+    expect(getNumList({ N: 20, a: 3, b: 1, allowNegative: true, exclude: [16] }))
+      .toEqual([1, 4]);
+  });
 });
 
 describe('countSqSumElement', () => {

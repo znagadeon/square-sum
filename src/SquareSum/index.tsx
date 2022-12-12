@@ -2,13 +2,15 @@ import { useRef, useState } from 'react';
 import { calculate } from './calculate';
 import { download } from '../utils/download';
 
-import { NumberInput } from '../components/Input';
+import { ArrayInput, NumberInput } from '../components/Input';
 
 const SquareSumPage = () => {
   const [N, setN] = useState(1_000_000);
   const [a, setA] = useState(3);
   const [b, setB] = useState(1);
   const [allowNegative, setAllowNegative] = useState(false);
+  const [excludes, setExcludes] = useState<string[]>([]);
+  const numberExcludes = excludes.map(v => parseInt(v));
   const [percentage, setPercentage] = useState(0);
   const map = useRef<Map<number, number> | null>(null);
 
@@ -18,7 +20,7 @@ const SquareSumPage = () => {
       return;
     }
 
-    map.current = calculate({ N, a, b, allowNegative }, setPercentage);
+    map.current = calculate({ N, a, b, allowNegative, exclude: numberExcludes }, setPercentage);
   };
 
   const _download = () => {
@@ -29,7 +31,7 @@ const SquareSumPage = () => {
 
     download({
       data: 'N,min\n' + result.join('\n'),
-      filename: `${N}-${a}-${b}-${allowNegative ? 'negative' : 'positive'}.csv`
+      filename: `${N}-${a}-${b}-${allowNegative ? 'negative' : 'positive'}-exclude${excludes.join(',')}.csv`
     });
   };
 
@@ -49,6 +51,9 @@ const SquareSumPage = () => {
             </li>
             <li>
               <NumberInput min={0} value={b} onChange={setB}>b</NumberInput>
+            </li>
+            <li>
+              <ArrayInput value={excludes} onChange={setExcludes}>제외</ArrayInput>
             </li>
             <li>
               <label>
