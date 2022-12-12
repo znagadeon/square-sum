@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { NumberInput, ArrayInput } from '../components/Input';
 import { calculate, CalculateReturnType } from './calculate';
 import { download } from '../utils/download';
+import { Progress } from '../components/Progress';
 
 const ModPage = () => {
   const [N, setN] = useState(1_000_000);
@@ -9,7 +10,7 @@ const ModPage = () => {
   const [targets, setTargets] = useState<string[]>(['3', '6']);
   const numberTargets = targets.map(v => parseInt(v));
 
-  const [percentage, setPercentage] = useState(0);
+  const [percentage, setPercentage] = useState(-1);
 
   const map = useRef(new Map<number, CalculateReturnType>())
 
@@ -58,27 +59,16 @@ const ModPage = () => {
               <ArrayInput value={targets} onChange={setTargets}>target</ArrayInput>
             </li>
             <li>
-              <button onClick={start}>계산하기</button>
+              <button
+                onClick={start}
+                disabled={percentage !== -1 && percentage !== 100}
+              >
+                계산하기
+              </button>
             </li>
           </ul>
         </nav>
-        <section>
-          {percentage === 0 && (
-            <h2>계산을 시작하세요</h2>
-          )}
-          {(0 < percentage && percentage < 100) && (
-            <>
-              <h2>계산중... {percentage}%</h2>
-              <progress max={100} value={percentage}>{percentage}%</progress>
-            </>
-          )}
-          {percentage === 100 && (
-            <>
-              <h2>계산 완료</h2>
-              <button onClick={_download}>다운로드</button>
-            </>
-          )}
-        </section>
+        <Progress percentage={percentage} download={_download} />
       </main>
     </div>
   );

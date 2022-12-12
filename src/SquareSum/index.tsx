@@ -3,6 +3,7 @@ import { calculate } from './calculate';
 import { download } from '../utils/download';
 
 import { ArrayInput, NumberInput } from '../components/Input';
+import { Progress } from '../components/Progress';
 
 const SquareSumPage = () => {
   const [N, setN] = useState(1_000_000);
@@ -11,7 +12,7 @@ const SquareSumPage = () => {
   const [allowNegative, setAllowNegative] = useState(false);
   const [excludes, setExcludes] = useState<string[]>([]);
   const numberExcludes = excludes.map(v => parseInt(v));
-  const [percentage, setPercentage] = useState(0);
+  const [percentage, setPercentage] = useState(-1);
   const map = useRef<Map<number, number> | null>(null);
 
   const start = () => {
@@ -68,29 +69,14 @@ const SquareSumPage = () => {
             <li>
               <button
                 onClick={start}
-                disabled={percentage !== 0 && percentage !== 100}
+                disabled={percentage !== -1 && percentage !== 100}
               >
                 계산하기
               </button>
             </li>
           </ul>
         </nav>
-        <section>
-          {percentage === 0 ? (
-            <h2>계산을 시작하세요</h2>
-          ) : (
-            <>
-              <h2>{percentage === 100 ? '계산 완료' : '계산중...'}</h2>
-              <progress max={100} value={percentage}>{percentage}%</progress>
-            </>
-          )}
-        </section>
-        {percentage === 100 && (
-          <section>
-            <h2>다운로드</h2>
-            <button disabled={map.current === null} onClick={_download}>다운로드</button>
-          </section>
-        )}
+        <Progress percentage={percentage} download={_download} />
       </main>
     </div>
   );
