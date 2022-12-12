@@ -36,7 +36,7 @@ const ModPage = () => {
 
     download({
       data: 'N,a,b,c\n' + result.join('\n'),
-      filename: `${N}-mod${mod}.csv`,
+      filename: `${N}-mod${mod}-target${targets.join(',')}.csv`,
     });
   };
 
