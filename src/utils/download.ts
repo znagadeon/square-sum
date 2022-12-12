@@ -5,7 +5,7 @@ type Parameter = {
   ext: string,
 };
 
-const DIVIDE = 400;
+const DIVIDE = 1_000_000;
 
 export const download = ({ label, data, filename, ext }: Parameter) => {
   const link = document.createElement('a');
