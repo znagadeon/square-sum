@@ -1,9 +1,20 @@
-export const download = ({ data, filename }: { data: string, filename: string }) => {
+type Parameter = {
+  label: string[],
+  data: string[],
+  filename: string,
+  ext: string,
+};
+
+const DIVIDE = 400;
+
+export const download = ({ label, data, filename, ext }: Parameter) => {
   const link = document.createElement('a');
 
-  const blob = new Blob([data]);
+  for (let i=0; i*DIVIDE<data.length; i++) {
+    const blob = new Blob([label.join(',') + '\n' + data.slice(i * DIVIDE, (i+1) * DIVIDE).join('\n')]);
 
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
+    link.href = URL.createObjectURL(blob);
+    link.download = `${filename}(${i+1}).${ext}`;
+    link.click();
+  }
 };

@@ -31,8 +31,10 @@ const SquareSumPage = () => {
     const result = Array.from(map.current.entries()).map(([n, min]) => `${n},${min}`);
 
     download({
-      data: 'N,min\n' + result.join('\n'),
-      filename: `${N}-${a}-${b}-${allowNegative ? 'negative' : 'positive'}-exclude${excludes.join(',')}.csv`
+      label: ['N', 'min'],
+      data: result,
+      filename: `${N}-${a}-${b}-${allowNegative ? 'negative' : 'positive'}-exclude${excludes.join(',')}`,
+      ext: 'csv',
     });
   };
 

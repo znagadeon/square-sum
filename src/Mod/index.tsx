@@ -36,8 +36,10 @@ const ModPage = () => {
       .map(([N, [a, b, c]]) => `${N},${a},${b},${c}`);
 
     download({
-      data: 'N,a,b,c\n' + result.join('\n'),
-      filename: `${N}-mod${mod}-target${targets.join(',')}.csv`,
+      label: ['N', 'a', 'b', 'c'],
+      data: result,
+      filename: `${N}-mod${mod}-target${targets.join(',')}`,
+      ext: 'csv',
     });
   };
 
