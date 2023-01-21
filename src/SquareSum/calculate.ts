@@ -6,7 +6,7 @@ type Parameter = {
   exclude?: number[],
 };
 
-export const getNumList = ({ N, a, b, allowNegative, exclude = [] }: Parameter) => {
+const getNumList = ({ N, a, b, allowNegative, exclude = [] }: Parameter) => {
   const set = new Set<number>();
 
   if (allowNegative) {
@@ -24,7 +24,7 @@ export const getNumList = ({ N, a, b, allowNegative, exclude = [] }: Parameter) 
     .sort((a, b) => a-b);
 };
 
-export const countSqSumElement = (N: number, nums: number[], memo: Map<number, number>) => {
+const countSqSumElement = (N: number, nums: number[], memo: Map<number, number>) => {
   if (N < 0) return -1;
   if (nums.length === 0) return -1;
 
@@ -45,7 +45,7 @@ export const countSqSumElement = (N: number, nums: number[], memo: Map<number, n
   return memo.get(N) as number;
 };
 
-export const calculate = ({ N, a, b, allowNegative, exclude = [] }: Parameter, cb?: (p: number) => void) => {
+const _calculate = ({ N, a, b, allowNegative, exclude = [] }: Parameter, cb?: (p: number) => void) => {
   if (a === 0 && b === 0) throw new Error('Zero Parameter');
 
   const nums = getNumList({ N, a, b, allowNegative, exclude });
@@ -55,23 +55,27 @@ export const calculate = ({ N, a, b, allowNegative, exclude = [] }: Parameter, c
 
   let percentage = 0;
   for (let i=1; i<=N; i++) {
-    requestIdleCallback(() => {
-      countSqSumElement(i, nums, memo);
+    // requestIdleCallback(() => {
+    //   countSqSumElement(i, nums, memo);
 
-      if (Math.floor(i * 100 / N) > percentage) {
-        percentage = Math.floor(i * 100 / N);
-        cb && cb(percentage);
-      }
-    });
+    //   if (Math.floor(i * 100 / N) > percentage) {
+    //     percentage = Math.floor(i * 100 / N);
+    //     cb && cb(percentage);
+    //   }
+    // });
 
     // 테스트용
-    // countSqSumElement(i, nums, memo);
+    countSqSumElement(i, nums, memo);
 
-    // if (Math.floor(i * 100 / N) > percentage) {
-    //   percentage = Math.floor(i * 100 / N);
-    //   cb && cb(percentage);
-    // }
+    if (Math.floor(i * 100 / N) > percentage) {
+      percentage = Math.floor(i * 100 / N);
+      cb && cb(percentage);
+    }
   }
 
   return memo;
 }
+
+module.exports = {
+  calculate: _calculate,
+};
