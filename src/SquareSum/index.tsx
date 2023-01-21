@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { calculate } from './calculate';
+import { calculate } from '../../calculate';
 import { download } from '../utils/download';
 
 import { ArrayInput, NumberInput } from '../components/Input';

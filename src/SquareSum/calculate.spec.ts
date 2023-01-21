@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { calculate, countSqSumElement, getNumList } from './calculate';
+import { calculate, countSqSumElement, getNumList } from '../../calculate';
 
 describe('getNumList', () => {
   it('returns square sum list', () => {

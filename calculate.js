@@ -1,13 +1,5 @@
-type Parameter = {
-  N: number,
-  a: number,
-  b: number,
-  allowNegative: boolean,
-  exclude?: number[],
-};
-
-const getNumList = ({ N, a, b, allowNegative, exclude = [] }: Parameter) => {
-  const set = new Set<number>();
+const getNumList = ({ N, a, b, allowNegative, exclude = [] }) => {
+  const set = new Set();
 
   if (allowNegative) {
     for (let i=-1; (a * i + b)**2<=N; i--) {
@@ -26,12 +18,12 @@ const getNumList = ({ N, a, b, allowNegative, exclude = [] }: Parameter) => {
     .sort((a, b) => a-b);
 };
 
-const countSqSumElement = (N: number, nums: number[], memo: Map<number, number>) => {
+const countSqSumElement = (N, nums, memo) => {
   if (N < 0) return -1;
   if (nums.length === 0) return -1;
 
   if (memo.has(N)) {
-    return memo.get(N) as number;
+    return memo.get(N);
   }
 
   const result = nums
@@ -44,14 +36,14 @@ const countSqSumElement = (N: number, nums: number[], memo: Map<number, number>)
   }
 
   memo.set(N, Math.min(...result) + 1);
-  return memo.get(N) as number;
+  return memo.get(N);
 };
 
-const _calculate = ({ N, a, b, allowNegative, exclude = [] }: Parameter, cb?: (p: number) => void) => {
+const _calculate = ({ N, a, b, allowNegative, exclude = [] }, cb) => {
   if (a === 0 && b === 0) throw new Error('Zero Parameter');
 
   const nums = getNumList({ N, a, b, allowNegative, exclude });
-  const memo = new Map<number, number>([
+  const memo = new Map([
     [0, 0],
   ]);
 
