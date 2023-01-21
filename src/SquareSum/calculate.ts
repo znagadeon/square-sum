@@ -19,8 +19,10 @@ const getNumList = ({ N, a, b, allowNegative, exclude = [] }: Parameter) => {
     set.add((a * i + b) ** 2);
   }
 
+  const excludeSquare = exclude.map(v => v*v);
+
   return Array.from(set)
-    .filter(v => v !== 0 && !exclude.includes(v))
+    .filter(v => v !== 0 && !excludeSquare.includes(v))
     .sort((a, b) => a-b);
 };
 
