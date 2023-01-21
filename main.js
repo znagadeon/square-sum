@@ -13,17 +13,26 @@ const map = calculate({ N, a, b, allowNegative, exclude }, (p) => {
   console.log(`${p}%`);
 });
 
+map.delete(0);
+
 const PATH = './result';
+const DIVIDE = 1_000_000;
 (async () => {
   if (!fs.existsSync(PATH)) {
     await fsPromises.mkdir(PATH);
   }
 
-  const filename = `${N}-${a}-${b}-${allowNegative ? 'negative' : 'positive'}-exclude${exclude.join(',')}.csv`;
-  const data = ([
-    ['N', 'min'],
-    ...Array.from(map.entries()),
-  ]).map(([n, min]) => `${n},${min}`);
+  const filename = `${N}-${a}-${b}-${allowNegative ? 'negative' : 'positive'}-exclude${exclude.join(',')}`;
+  const label = ['N', 'min'];
+  const data = Array.from(map.entries());
 
-  await fsPromises.writeFile(path.resolve(PATH, filename), data.join('\n'));
+  for (let i=0; i*DIVIDE < data.length; i++) {
+    const file = [label, ...data.slice(i*DIVIDE, (i+1)*DIVIDE)]
+      .map(([n, min]) => `${n},${min}`);
+
+    await fsPromises.writeFile(
+      path.resolve(PATH, `${filename}(${i+1}).csv`),
+      file.join('\n'),
+    );
+  }
 })();
